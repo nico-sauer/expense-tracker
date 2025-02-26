@@ -1,7 +1,9 @@
 import re
 import time
 import datetime
+import getpass
 import sys
+
 
 def password_checker(password):
     '''function to check if entered password matches given critera:
@@ -27,37 +29,42 @@ def login():
     
     print("To log in please enter your name and password.")
     name = input("Name: ").title()
-    pwd = input("Password: ")
+    pwd = getpass.getpass()
     if name == username and pwd == password:
         print("Successfully logged in.")
         time.sleep(1)
         print("Welcome to the Amazon Expense Tracker!")
         return True
     elif name != username:
-        print("Invalid username.")
+        if pwd != password:
+            print("Login failed.")
+            return False
+        print("Invalid username. Login failed.")
         return False
     elif pwd != password:
-        print("Invalid password.")
+        print("Invalid password. Login failed")
         return False
+   
 
 
 
 #registration and log in 
 
 #take username, password and phone number  
-
+phone_number = None
 username = input("Enter Name to register:\n>").title()
 print("Password should be between 6 to 20 characters long and have at least one of each: a number, uppercase and lowercase character, special symbol(@&%!?$_).")
-phone_number = None
 
-password = input("Enter a password: ")
+
+password = getpass.getpass()
 if not password_checker(password):
     print("Try again.")
+    sys.exit()
     
 else:
-    print("Successful password.")
+    print("Valid password.")
         
-    #phone_number = None 
+ 
     
     while phone_number == None:
         phone_number = input("Enter a German phone number:\n>")
@@ -110,13 +117,15 @@ def purchase_tracker():
     purchase_date = None
 
     while purchase_date == None:
-        purchase_date = input("Enter Date of purchase (MM/DD/YYYY or MM-DD-YYYY):\n—>  ")
+        purchase_date = input("Enter Date of purchase (MM/DD/YYYY or MM-DD-YYYY) or enter 'today' for today's purchases:\n—>  ").lower()
+        if purchase_date == "today":
+            purchase_date = today.strftime("%m/%d/%Y")
         if not valid_date(purchase_date):
             print("Invalid Format. Reminder: MM/DD/YYYY or MM-DD-YYYY")
             purchase_date = None
         else:
             items["Date of purchase"] = save_date(purchase_date)
-            #print(save_date(purchase_date)) # for testing remove later
+            
             
     #ask for item cost until it matches critera
     purchase_cost = None
@@ -239,10 +248,10 @@ def report(purchases):
 #print menu that prompts user for 3 options
 
 running = True
-#empty list for dictionaries
+
 purchases = []
 #items = {}
- 
+today = datetime.date.today()
 while True:
     print("***********************************")
     print("*              ***                *")
@@ -281,8 +290,5 @@ while True:
         
     elif option == "3":
         print("Goodbye.")
-        break
-        
-        #sys.exit()
-
+        sys.exit()
 
